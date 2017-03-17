@@ -1,3 +1,24 @@
 /* Style for the main pnis page */
 /*TODO Decide on colour palette*/
+/*TODO Align Input/Output blocks*/
 /*TODO Style site after all the html is finished*/
+div.output {
+    float: left;
+    margin-left: 50px;
+    border-width: 1px;
+}
+div.pnis_output {
+    text-align: right;
+    width: 275px;
+    height: 40px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: grey;
+}
+form.decimal_convert {
+    float: left;
+}
+textarea {
+    text-align: right;
+    resize: none;
+}
