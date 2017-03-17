@@ -17,9 +17,9 @@
         $img_tag_title_start = "title='";
         // names.txt holds a list of ordered pokemon names, 1 per line
         $lines = file('names.txt');
-        // The ordered list has a space and a newline character we need to get rid of
-        // We take off the last two characters from the string collected to do that
-        $img_tag_title_middle_end = substr($lines[$poke_number], 0,-2) . " #" . $poke_number . "'";
+        // The ordered list has a newline character we need to get rid of
+        // We take off the last character from the string collected to do that
+        $img_tag_title_middle_end = substr($lines[$poke_number], 0,-1) . " #" . $poke_number . "'";
         $img_tag_end = ">";
         // Combining the final string
         $img_tag_final = $img_tag_start .
@@ -37,7 +37,7 @@
     // Where [0] is the 802's collumn and [1] is the 1's column
     function gen_PNIS_number_arr($dec_number)
     {
-        $number_of_pokemon = 802;
+        $number_of_pokemon = 803;
         $PNIS_number_arr = [];
         // Trival case, only 1 pokemon needed
         if($dec_number <= $number_of_pokemon-1)
@@ -85,10 +85,8 @@
     </div>
 
     <!--TODO Make input/output blocks-->
-    <!--TODO Add forms for converting decimal to pnis-->
-    <!--Froms will submit to self where php will be used to process input-->
-    <!--TODO Add php script for converting decimal to pnis-->
     <!--TODO Add text and images to make site look good-->
     <!--IDEA Create an Input Method Editor (IME) for typing in pnis-->
+    <!--IDEA Create a breakdown of how the PNIS representation forms the decimal number
 </body>
 </html>
