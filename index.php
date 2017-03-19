@@ -6,6 +6,8 @@
 </head>
 <body>
     <?php
+    // function definitions
+
     // Creates an html image tag for the appropriate pokemon
     // Ex. create_image_tag(25) will output <img src='./sprites/025MS.png' title='Pikachu #25'>
     function create_image_tag($poke_number)
@@ -77,6 +79,10 @@
         $check_arr[] = (bccomp($MAX_NUM, $in) >= 0);
         for($ii = 0, $arr_size = count($check_arr); $ii < $arr_size; $ii++)
         {
+            // Loop through all checks in array to see if one failed
+            // Might not be super efficient but it is what I decided on
+            // could be replaced by many
+            // if(check){return FALSE}...if(check){return FALSE}...if(check){return FALSE}...return TRUE
             if(!$check_arr[$ii])
             {
                 return FALSE;
@@ -84,35 +90,94 @@
         }
         return TRUE;
     }
+    function get_random_team_number()
+    {
+        // Will generate 6 802's
+        $MAX_NUM = "268097813258767128";
+        // Will generate 6 1's
+        $MIN_NUM = "334286550197964";
+        // Get a random number between 0 and 1 rounded to 18 decimal places
+        // We need this precision to make it possible to get each number between
+        // min and max (there are lots)
+        $random_percentage = bcdiv( rand(0, getrandmax()), getrandmax(), 18);
+        // we will never get 0, but if we get 0.001 (closest to 0), change to 0
+        if($random_percentage == 0.000000000000000001)
+        {
+            $random_percentage = 0;
+        }
+        $diff = bcsub($MAX_NUM, $MIN_NUM);
+        // We get a random percentage of the difference between max and min
+        // Then we add that to the min to get the final number
+        // Lowest would be min + (0 * diff) = min
+        // Highest would be min + (1 * diff) = max
+        return bcadd($MIN_NUM, bcmul($random_percentage, $diff));
+    }
+    function create_PNIS_output_html($decimal_input)
+    {
+        $output_arr = gen_PNIS_number_arr($decimal_input);
+        $PNIS_output_HTML = "";
+        for ($ii = 0, $size = count($output_arr); $ii < $size; $ii++)
+        {
+            // Loop through each number in the output array
+            // and create an html image tag for it
+            $PNIS_output_HTML .= create_image_tag($output_arr[$ii]);
+        }
+        return $PNIS_output_HTML;
+    }
+    ?>
+    <?php
+    // Start off by finding out if random team was selected
+    // If it is we generate a random number for that team and set a random flag
+    // these variables will be used by the rest of the following code
+    if(isset($_GET['random']) && $_GET['random'] == 1)
+    {
+        $random_team_number = get_random_team_number();
+        $is_random = TRUE;
+    }
+    else
+    {
+        $is_random = FALSE;
+    }
     ?>
     <form method="GET" class='decimal_convert' action="<?php echo htmlentities( $_SERVER['PHP_SELF'] ); ?>">
         Decimal Number:<br>
-        <textarea id="decimal_input" rows="1" cols="20" name="input"><?php echo $_GET['input']?></textarea>
-        <input id='decimal_convert_button' type="submit" value="Convert">
+        <textarea id="decimal_input" rows="1" cols="20" name="input"><?php
+        // Fill in the text area with either the random number generated
+        // or with the input supplied
+        if($is_random)
+        {
+            print($random_team_number);
+        }
+        elseif(isset($_GET['input']))
+        {
+            print($_GET['input']);
+        }
+        ?></textarea>
+        <input id='decimal_convert_button' type="submit" value="Convert"></br>
+        <button id='gen_random_team_button' type="submit" name="random" value="1">Random Team</button>
     </form>
     <div class="output">
         PNIS Output:<br>
         <div class="pnis_output">
             <?php
-            if(isset($_GET['input']) && $_GET['input'] != "")
+            if($is_random)
+            {
+                print(create_PNIS_output_html( $random_team_number ));
+            }
+            elseif (isset($_GET['input']) && $_GET['input'] != "")
             {
                 if(is_input_valid($_GET['input']))
                 {
-                    $output_arr = gen_PNIS_number_arr($_GET['input']);
-                    for ($ii = 0; $ii < sizeof($output_arr); $ii++)
-                    {
-                        // Loop through each number in the output array
-                        // and create an html image tag for it
-                        print(create_image_tag($output_arr[$ii]));
-                    }
+                    print(create_PNIS_output_html( $_GET['input'] ));
                 }
+                //TODO else{ trigger some error display here }
             }
             ?>
         </div>
     </div>
-    
+
     <!--TODO Add text and images to make site look good-->
     <!--IDEA Create an Input Method Editor (IME) for typing in pnis-->
-    <!--IDEA Create a breakdown of how the PNIS representation forms the decimal number
+    <!--IDEA Create a breakdown of how the PNIS representation forms the decimal number-->
 </body>
 </html>
