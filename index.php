@@ -33,32 +33,56 @@
     }
     // Generate an array of numbers that will represent the provided decimal number using PNIS
     // Lowest array index is the farthest digit to the left
-    // Ex. gen_PNIS_number_arr(804) will return [0] => 1, [1] => 2
-    // Where [0] is the 802's collumn and [1] is the 1's column
+    // Ex. gen_PNIS_number_arr(805) will return [0] => 1, [1] => 2
+    // Where [0] is the 803's collumn and [1] is the 1's column
     function gen_PNIS_number_arr($dec_number)
     {
-        $number_of_pokemon = 803;
+        $base = 803;
         $PNIS_number_arr = [];
-        // Trival case, only 1 pokemon needed
-        if($dec_number <= $number_of_pokemon-1)
+        // Trivial case, just return one pokemon with the same number that was provided
+        if($dec_number <= $base-1)
         {
             $PNIS_number_arr[] = $dec_number;
             return $PNIS_number_arr;
         }
         else
         {
-            // Divide the input by 802 and store remainder
+            // Divide the input by the base (803) and store remainder
             // The quotient becomes the new input number
             // Repeat until the quotient is zero
             // The remainders in reverse order makeup the new number
             $quotient = $dec_number;
-            do {
-                $remainder = $quotient % $number_of_pokemon;
-                $quotient = round($quotient / $number_of_pokemon);
+            do
+            {
+                $remainder = bcmod($quotient, $base);
+                $quotient = bcdiv($quotient, $base);
                 $PNIS_number_arr[] = $remainder;
-            } while ($quotient != 0);
+            }
+            while($quotient != 0);
         }
         return array_reverse($PNIS_number_arr);
+    }
+    function is_input_valid($in)
+    {
+        $MAX_NUM = "268097813258767128";
+        $MIN_NUM = 0;
+        // Check arr is filled with the results of many checks
+        // Looped through eventually to find if any checks failed
+        $check_arr = [];
+        // Check its only numbers
+        $check_arr[] = is_numeric($in);
+        // check its greater than or equal to min number
+        $check_arr[] = ($in >= $MIN_NUM);
+        // check its less than or equal to max number
+        $check_arr[] = (bccomp($MAX_NUM, $in) >= 0);
+        for($ii = 0, $arr_size = count($check_arr); $ii < $arr_size; $ii++)
+        {
+            if(!$check_arr[$ii])
+            {
+                return FALSE;
+            }
+        }
+        return TRUE;
     }
     ?>
     <form method="GET" class='decimal_convert' action="<?php echo htmlentities( $_SERVER['PHP_SELF'] ); ?>">
@@ -72,19 +96,21 @@
             <?php
             if(isset($_GET['input']) && $_GET['input'] != "")
             {
-                $output_arr = gen_PNIS_number_arr($_GET['input']);
-                for ($ii = 0; $ii < sizeof($output_arr); $ii++)
+                if(is_input_valid($_GET['input']))
                 {
-                    // Loop through each number in the output array
-                    // and create an html image tag for it
-                    print(create_image_tag($output_arr[$ii]));
+                    $output_arr = gen_PNIS_number_arr($_GET['input']);
+                    for ($ii = 0; $ii < sizeof($output_arr); $ii++)
+                    {
+                        // Loop through each number in the output array
+                        // and create an html image tag for it
+                        print(create_image_tag($output_arr[$ii]));
+                    }
                 }
             }
             ?>
         </div>
     </div>
-
-    <!--TODO Make input/output blocks-->
+    
     <!--TODO Add text and images to make site look good-->
     <!--IDEA Create an Input Method Editor (IME) for typing in pnis-->
     <!--IDEA Create a breakdown of how the PNIS representation forms the decimal number
