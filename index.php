@@ -68,49 +68,39 @@
     {
         $MAX_NUM = "268097813258767128";
         $MIN_NUM = 0;
-        // Check arr is filled with the results of many checks
-        // Looped through eventually to find if any checks failed
-        $check_arr = [];
-        // Check its only numbers
-        $check_arr[] = is_numeric($in);
-        // check its greater than or equal to min number
-        $check_arr[] = ($in >= $MIN_NUM);
-        // check its less than or equal to max number
-        $check_arr[] = (bccomp($MAX_NUM, $in) >= 0);
-        for($ii = 0, $arr_size = count($check_arr); $ii < $arr_size; $ii++)
+        if(!is_numeric($in))
         {
-            // Loop through all checks in array to see if one failed
-            // Might not be super efficient but it is what I decided on
-            // could be replaced by many
-            // if(check){return FALSE}...if(check){return FALSE}...if(check){return FALSE}...return TRUE
-            if(!$check_arr[$ii])
-            {
-                return FALSE;
-            }
+            return FALSE;
+        }
+        if(!($in >= $MIN_NUM))
+        {
+            return FALSE;
+        }
+        if(!(bccomp($MAX_NUM, $in) >= 0))
+        {
+            return FALSE;
         }
         return TRUE;
     }
     function get_random_team_number()
     {
-        // Will generate 6 802's
-        $MAX_NUM = "268097813258767128";
-        // Will generate 6 1's
-        $MIN_NUM = "334286550197964";
-        // Get a random number between 0 and 1 rounded to 18 decimal places
-        // We need this precision to make it possible to get each number between
-        // min and max (there are lots)
-        $random_percentage = bcdiv( rand(0, getrandmax()), getrandmax(), 18);
-        // we will never get 0, but if we get 0.001 (closest to 0), change to 0
-        if($random_percentage == 0.000000000000000001)
+        $BASE = 803;
+        $MIN_NUM = 1;
+        $MAX_NUM = 802;
+        $TEAM_SIZE = 6;
+        $team_poke_nums = [];
+        for($ii = 0; $ii < $TEAM_SIZE; $ii++)
         {
-            $random_percentage = 0;
+            $team_poke_nums[] = rand($MIN_NUM, $MAX_NUM);
         }
-        $diff = bcsub($MAX_NUM, $MIN_NUM);
-        // We get a random percentage of the difference between max and min
-        // Then we add that to the min to get the final number
-        // Lowest would be min + (0 * diff) = min
-        // Highest would be min + (1 * diff) = max
-        return bcadd($MIN_NUM, bcmul($random_percentage, $diff));
+        // Turn the array into a decimal digit
+        $team_decimal_num = 0;
+        for($exp = 0; $exp < $TEAM_SIZE; $exp++)
+        {
+            $team_decimal_num += ($team_poke_nums[$exp] * ($BASE ** $exp));
+        }
+        return $team_decimal_num;
+
     }
     function create_PNIS_output_html($decimal_input)
     {
@@ -153,7 +143,7 @@
             print($_GET['input']);
         }
         ?></textarea>
-        <input id='decimal_convert_button' type="submit" value="Convert"></br>
+        <input id='decimal_convert_button' type="submit" value="Convert"><br>
         <button id='gen_random_team_button' type="submit" name="random" value="1">Random Team</button>
     </form>
     <div class="output">
