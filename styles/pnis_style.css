@@ -66,5 +66,6 @@ p {
     display: block;
     margin: auto;
     width: 500px;
-    padding-bottom: 20px;
+    margin-bottom: 20px;
+    background-color:  #f5f3f5;
 }
