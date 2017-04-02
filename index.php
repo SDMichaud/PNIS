@@ -91,7 +91,11 @@
         $team_poke_nums = [];
         for($ii = 0; $ii < $TEAM_SIZE; $ii++)
         {
-            $team_poke_nums[] = rand($MIN_NUM, $MAX_NUM);
+            // Ensure each pokemon is unique
+            do{
+                $poke_num = rand($MIN_NUM, $MAX_NUM);
+            }while(in_array($poke_num, $team_poke_nums));
+            $team_poke_nums[] = $poke_num;
         }
         // Turn the array into a decimal digit
         $team_decimal_num = 0;
@@ -143,18 +147,18 @@
         <div class="input">
             <form method="GET" class='decimal_convert' action="<?php echo htmlentities( $_SERVER['PHP_SELF'] ); ?>">
                 Decimal Number:<br>
-                <textarea id="decimal_input" rows="1" cols="20" name="input"><?php
-                // Fill in the text area with either the random number generated
-        // or with the input supplied
+                <input type=text  id="decimal_input" size="25" name="input" value="<?php
+                // Display the value of the input used or the random number generated inside the textbox
                 if($is_random)
                 {
-            print($random_team_number);
-        }
+                    print($random_team_number);
+                }
                 elseif(isset($_GET['input']))
                 {
-            print($_GET['input']);
-        }
-                ?></textarea><br>
+                    print($_GET['input']);
+                }
+                ?>"></input>
+                <br>
                 <input id='decimal_convert_button' type="submit" value="Convert">
                 <button id='gen_random_team_button' type="submit" name="random" value="1">Random Team</button>
             </form>

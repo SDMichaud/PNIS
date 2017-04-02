@@ -43,6 +43,7 @@ p {
 #decimal_input {
     background-color: #f5f3f5;
     border: solid 1px #302b27;
+    margin-bottom: 2px;
 }
 
 #decimal_convert_button {
