@@ -13,7 +13,7 @@
     function create_image_tag($poke_number)
     {
         $img_tag_start = "<img ";
-        $img_tag_src_start = "src='./sprites/";
+        $img_tag_src_start = "src='sprites/";
         $img_tag_src_middle = sprintf("%'.03d", $poke_number);
         $img_tag_src_end = "MS.png' ";
         $img_tag_title_start = "title='";
@@ -129,45 +129,86 @@
         $is_random = FALSE;
     }
     ?>
-    <form method="GET" class='decimal_convert' action="<?php echo htmlentities( $_SERVER['PHP_SELF'] ); ?>">
-        Decimal Number:<br>
-        <textarea id="decimal_input" rows="1" cols="20" name="input"><?php
-        // Fill in the text area with either the random number generated
+    <div class="centre_pane">
+        <img id="PNIS_logo" src="images/PNIS_logo.png">
+        <h1>
+            Try It Out!
+        </h1>
+        <hr>
+        <p>
+            Enter a decimal number on the left and convert it into PNIS on the right. You can also
+            generate a random number that will convert into six Pokémon as a way to generate a random
+            team!
+        </p>
+        <div class="input">
+            <form method="GET" class='decimal_convert' action="<?php echo htmlentities( $_SERVER['PHP_SELF'] ); ?>">
+                Decimal Number:<br>
+                <textarea id="decimal_input" rows="1" cols="20" name="input"><?php
+                // Fill in the text area with either the random number generated
         // or with the input supplied
-        if($is_random)
-        {
+                if($is_random)
+                {
             print($random_team_number);
         }
-        elseif(isset($_GET['input']))
-        {
+                elseif(isset($_GET['input']))
+                {
             print($_GET['input']);
         }
-        ?></textarea>
-        <input id='decimal_convert_button' type="submit" value="Convert"><br>
-        <button id='gen_random_team_button' type="submit" name="random" value="1">Random Team</button>
-    </form>
-    <div class="output">
-        PNIS Output:<br>
-        <div class="pnis_output">
-            <?php
-            if($is_random)
-            {
+                ?></textarea><br>
+                <input id='decimal_convert_button' type="submit" value="Convert">
+                <button id='gen_random_team_button' type="submit" name="random" value="1">Random Team</button>
+            </form>
+        </div>
+        <div class="output">
+            PNIS Output:<br>
+            <div class="output_box">
+                <?php
+                    if($is_random)
+                    {
                 print(create_PNIS_output_html( $random_team_number ));
             }
-            elseif (isset($_GET['input']) && $_GET['input'] != "")
-            {
+                    elseif (isset($_GET['input']) && $_GET['input'] != "")
+                    {
                 if(is_input_valid($_GET['input']))
                 {
                     print(create_PNIS_output_html( $_GET['input'] ));
                 }
                 //TODO else{ trigger some error display here }
             }
-            ?>
+                ?>
+            </div>
         </div>
+        <h1>
+            What Is PNIS?
+        </h1>
+        <hr>
+        <p>
+            The Pokémon Novelty Integer System, or PNIS for short, is a numeral system that expresses numbers
+            using Pokémon as digits. PNIS is a system similar to binary, octal, or decimal, except it has way
+            more digits then all of them! <br><br>
+            Counting in the decimal system begins with one digit, 0, and continues until 9. There are no more
+            digits after 9 so the number must be expressed using two digits, 10. Decimal is known as a base 10
+            system since it contains 10 unique digits. Binary is base 2 and uses two digits, 0 and 1. PNIS currently
+            contains 803 unique digits (802 Pokémon plus a zero), making it a base 803 numeral system!
+        </p>
+        <h1>
+            How Does It Work?
+        </h1>
+        <hr>
+        <p>
+            Just like decimal, PNIS works through "positional notation". Each digit represents a specific order of
+            magnitude based on its position in the number. For example five and fifty are represented in decimal
+            as 5 and 50. In the first number the "5" is in the "ones" position and represents 5 "ones". In the second
+            number the "5" is in the "tens" position and represents 5 "tens". As more digits are added to the left of the number
+            the order of magnitude increases by the base of the numeral system. For PNIS, the base is 803! Below is a diagram to explain:
+        </p>
+        <img id="numeral_pic" src="images/numeral_system_explained.png">
+        <p>
+            The 803 digits of PNIS are represented by Pokémon and their National Pokédex number. Bulbasaur is 1,
+            Wobbuffet is 202, and Marshadow is 802. Since there is no Pokémon with the number 0, MissingNo is used. Play around with PNIS
+            and make sure to show all your friends!
+        </p>
     </div>
-
-    <!--TODO Add text and images to make site look good-->
     <!--IDEA Create an Input Method Editor (IME) for typing in pnis-->
-    <!--IDEA Create a breakdown of how the PNIS representation forms the decimal number-->
 </body>
 </html>
